@@ -1,0 +1,11 @@
+[Unit]
+Description=Run barq-zfs-deprecation-notifier 20 mins after boot
+
+[Timer]
+OnBootSec=20min
+Unit=barq-zfs-deprecation-notifier.service
+OnUnitActiveSec=1w
+Persistent=true
+
+[Install]
+WantedBy=timers.target

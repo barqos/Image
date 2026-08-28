@@ -1,0 +1,15 @@
+*.img
+
+aurora*.oci
+barq*.oci
+sbom_out
+*.sbom
+
+changelog.md
+output.env
+
+devcontainer
+
+# Cosign private key — store as GitHub secret SIGNING_SECRET
+cosign.key
+*.key

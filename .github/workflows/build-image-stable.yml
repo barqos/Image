@@ -1,0 +1,45 @@
+name: Stable Images
+on:
+  # We do not want this to run after PR merges
+  # we are only publishing weekly :stable images
+
+  # We still want to know if things are broken
+  pull_request:
+    branches:
+      - stable-f44
+    paths-ignore:
+      - "**.md"
+      - ".github/workflows/moderator.yml"
+      - ".github/workflows/scorecard.yml"
+  workflow_call:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  build-image-stable:
+    name: Build Stable Images
+    uses: ./.github/workflows/reusable-build.yml
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    secrets:
+      SIGNING_SECRET: ${{ secrets.SIGNING_SECRET }}
+    with:
+      stream_name: stable
+      # Enable ARM when it makes sense
+      # architecture: '["aarch64","x86_64"]'
+      architecture: '["x86_64"]'
+      publish: ${{ github.event_name != 'pull_request' }}
+
+  generate-release:
+    name: Generate Release
+    needs: [build-image-stable]
+    permissions:
+      contents: write
+    uses: ./.github/workflows/generate-release.yml
+    with:
+      stream_name: '["stable"]'
